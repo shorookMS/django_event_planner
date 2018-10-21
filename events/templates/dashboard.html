@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container p-5">
+  <div class="container mt-5">
+    <h2>My Events</h2>
+  </div>
+  <hr class="m-3">
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Event</th>
+          <th scope="col">Info</th>
+          <th scope="col">Location</th>
+          <th scope="col">Time</th>
+          <th scope="col">Event</th>
+          <th scope="col">Seats</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for event in events%}
+        <tr>
+          <td>{{event.title}}</td>
+          <td>{{event.description}}</td>
+          <td>{{event.location}}</td>
+          <td>{{event.date}}</td>
+          <td>{{event.time}}</td>
+          <td>{{event.seats}}</td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

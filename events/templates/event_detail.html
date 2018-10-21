@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Event Details{% endblock title %}
+
+{% block content %}
+    
+
+<div class="jumbotron ">
+<div class="card m-5">
+  <h2 class="card-header">Event Details</h2>
+  <div class="card-body">
+    <p class="card-text">
+       <h3>{{event.title}}</h3>
+       <hr class="m-2">
+          <p>{{event.description}}</p>
+          <p>Location: {{event.location}}</p>
+          <p> Date: {{event.date}} Time:{{event.time}}</p>
+          <p>No. of seats left: {{event.seats}}</p>
+    </p>
+      {% if request.user == event.user %}
+            <a href="{% url 'event-update' event.id %}" class="btn btn-outline-primary ">Update</a>
+      {% endif %}
+
+  </div>
+</div>
+</div>
+{% endblock content %}

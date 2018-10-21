@@ -1,10 +1,70 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
-from .forms import UserSignup, UserLogin
+from .forms import UserSignup, UserLogin, EventForm
+from .models import Event
+from django.contrib import messages
 
 def home(request):
     return render(request, 'home.html')
+
+def create_event(request):
+    if request.user.is_anonymous:
+        return redirect('signin')
+    form = EventForm()
+    if request.method == "POST":
+        form = EventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.user = request.user
+            event.save()
+            return redirect('dashboard')
+
+    context = {
+        'form':form,
+    }
+    return render(request, 'create_event.html', context)
+
+def event_update(request, event_id):
+    event = Event.objects.get(id=event_id)
+    if not (request.user.is_staff or request.user == event.user):
+        return redirect('no-access')
+    form = EventForm(instance=event)
+    if request.method == "POST":
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('events-list')
+    context = {
+        "event": event,
+        "form":form,
+    }
+    return render(request, 'event_update.html', context)
+
+def dashboard(request):
+    events = Event.objects.filter(user=request.user)
+
+    context = {
+        'events':events,
+    }
+    return render(request, 'dashboard.html',context)
+
+def event_detail(request, event_id):
+    event = Event.objects.get(id=event_id)
+
+    context = {
+        'event': event
+    }
+    return render(request,'event_detail.html',context)
+
+
+def events_list(request):
+    events = Event.objects.all()
+    context = {
+        'events':events,
+    }
+
+    return render(request, 'events_list.html',context)
 
 class Signup(View):
     form_class = UserSignup
