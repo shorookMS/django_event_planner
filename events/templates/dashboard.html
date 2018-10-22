@@ -34,6 +34,41 @@
     </table>
     </div>
   </div>
+
+    <div class="container mt-5">
+      <h2>My Booked Events</h2>
+    </div>
+    <hr class="m-3">
+
+
+    <div class="card">
+    <div class="table-responsive">
+      <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Event</th>
+          <th scope="col">Info</th>
+          <th scope="col">Location</th>
+          <th scope="col">Time</th>
+          <th scope="col">Event</th>
+          <th scope="col">Tickets</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for booked in booked%}
+        <tr>
+          <td>{{booked.event.title}}</td>
+          <td>{{booked.event.description}}</td>
+          <td>{{booked.event.location}}</td>
+          <td>{{booked.event.date}}</td>
+          <td>{{booked.event.time}}</td>
+          <td>{{booked.ticket}}</td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+    </div>
+  </div>
 </div>
 
 

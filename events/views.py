@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
-from .forms import UserSignup, UserLogin, EventForm
-from .models import Event
+from .forms import UserSignup, UserLogin, EventForm , BookEventForm
+from .models import Event , BookedEvent
 from django.contrib import messages
 
 def home(request):
@@ -43,9 +43,11 @@ def event_update(request, event_id):
 
 def dashboard(request):
     events = Event.objects.filter(user=request.user)
+    booked = BookedEvent.objects.filter(user=request.user)
 
     context = {
         'events':events,
+        'booked' : booked
     }
     return render(request, 'dashboard.html',context)
 
@@ -65,6 +67,27 @@ def events_list(request):
     }
 
     return render(request, 'events_list.html',context)
+
+def event_book(request, event_id):
+    if request.user.is_anonymous:
+        return redirect('signin')
+    event = Event.objects.get(id=event_id)
+    form = BookEventForm()
+    if request.method == "POST":
+        form = BookEventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.user = request.user
+            event.event = Event.objects.get(id=event_id)
+            event.save()
+            return redirect('dashboard')
+
+    context = {
+        'form':form,
+        'event': event,
+
+    }
+    return render(request, 'book_event.html', context)
 
 class Signup(View):
     form_class = UserSignup

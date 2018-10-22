@@ -18,10 +18,10 @@
           <p> Date: {{event.date}} Time:{{event.time}}</p>
           <p>No. of seats left: {{event.seats}}</p>
     </p>
-      {% if request.user == event.user %}
-            <a href="{% url 'event-update' event.id %}" class="btn btn-outline-primary ">Update</a>
-      {% endif %}
-
+    {% if request.user == event.user %}
+    <a href="{% url 'event-update' event.id %}" class="btn btn-outline-primary ">Update</a>
+    {% endif %}
+    <a href="{% url 'event-book' event.id %}" class="btn btn-outline-success ">Book</a>
   </div>
 </div>
 </div>
