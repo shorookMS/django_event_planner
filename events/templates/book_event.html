@@ -10,9 +10,11 @@
   <h5 class="card-header">Book Event</h5>
   <div class="card-body">
     <p class="card-text">
+      Current available seats : {{event.seats}}
         <form action="{% url 'event-book' event.id %}" method="POST" >
             {% csrf_token %}
-            {{form|crispy}}
+            <input type="number" name="ticket" min="1" max={{event.seats}} class="numberinput form-control">
+            <br>
             <input type="submit" value="Create" class="btn btn-outline-success">
         </form>
     </p>

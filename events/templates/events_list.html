@@ -2,9 +2,13 @@
 
 {% block content %}
 <div class="container p-5">
-  <div class="container mt-5">
-    <h2>Events List</h2>
+  <div class=" container mt-5">
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" name="q" type="search" value="{{request.GET.q}}" placeholder="Search Items" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form> <br>
   </div>
+   <h2>Events List</h2>
   <hr class="m-3">
   <div class="row">
   {% for event in events %}
@@ -12,18 +16,19 @@
         <div class="card h-100">
             <div class="card-body bg-light">
                 <h3 class="card-title">{{event.title}}</h3>
-                <h5 class="card-text">
+                <p class="card-text">
                 Location: {{event.location}}<br>
                 Date: {{event.date}}<br>
                 Time: {{event.time}}<br>
-                </h5>
+                <hr>
+                Orgnizer: {{event.user.username}}<br>
+                </p>
                 <a href="{% url 'event-detail' event.id %}" class="btn btn-outline-dark">More</a>
             </div>
         </div>
     </div>
   {% endfor %}
   </div>
-
 </div>
 
 

@@ -7,22 +7,27 @@
     
 
 <div class="jumbotron ">
-<div class="card m-5">
-  <h2 class="card-header">Event Details</h2>
-  <div class="card-body">
-    <p class="card-text">
-       <h3>{{event.title}}</h3>
-       <hr class="m-2">
-          <p>{{event.description}}</p>
-          <p>Location: {{event.location}}</p>
-          <p> Date: {{event.date}} Time:{{event.time}}</p>
-          <p>No. of seats left: {{event.seats}}</p>
-    </p>
-    {% if request.user == event.user %}
-    <a href="{% url 'event-update' event.id %}" class="btn btn-outline-primary ">Update</a>
-    {% endif %}
-    <a href="{% url 'event-book' event.id %}" class="btn btn-outline-success ">Book</a>
+  <div class="card m-5">
+    <h2 class="card-header">Event Details</h2>
+    <div class="card-body">
+      <p class="card-text">
+         <h3>{{event.title}}</h3>
+         <hr class="m-2">
+            <p>{{event.description}}</p>
+            <p>Location: {{event.location}}</p>
+            <p> Date: {{event.date}} Time:{{event.time}}</p>
+            <p>No. of seats left: {{event.seats}}</p>
+      </p>
+      {% if request.user == event.user %}
+      <a href="{% url 'event-update' event.id %}" class="btn btn-outline-primary ">Update</a>
+      {% endif %}
+      {% if not event.seats == 0 %}
+      <a href="{% url 'event-book' event.id %}" class="btn btn-outline-success ">Book</a>
+      {%else%}
+      <a href="{% url 'event-book' event.id %}" class="btn btn-outline-secondary disabled ">Full</a>
+      {% endif %}
+
+    </div>
   </div>
-</div>
 </div>
 {% endblock content %}

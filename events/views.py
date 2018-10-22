@@ -4,6 +4,7 @@ from django.views import View
 from .forms import UserSignup, UserLogin, EventForm , BookEventForm
 from .models import Event , BookedEvent
 from django.contrib import messages
+from django.db.models import Q
 
 def home(request):
     return render(request, 'home.html')
@@ -62,6 +63,14 @@ def event_detail(request, event_id):
 
 def events_list(request):
     events = Event.objects.all()
+    query = request.GET.get('q')
+
+    if query:
+        events = events.filter(
+        Q(title__icontains=query)|
+        Q(description__icontains=query)|
+        Q(user__username__icontains=query)
+        ).distinct()
     context = {
         'events':events,
     }
@@ -71,20 +80,24 @@ def events_list(request):
 def event_book(request, event_id):
     if request.user.is_anonymous:
         return redirect('signin')
-    event = Event.objects.get(id=event_id)
+    event_obj = Event.objects.get(id=event_id)
     form = BookEventForm()
     if request.method == "POST":
         form = BookEventForm(request.POST)
         if form.is_valid():
-            event = form.save(commit=False)
-            event.user = request.user
-            event.event = Event.objects.get(id=event_id)
-            event.save()
+            booking = form.save(commit=False)
+            booking.user = request.user
+            booking.event = event_obj
+
+            event_obj.seats = event_obj.seats - booking.ticket
+            event_obj.save()
+            booking.save()
+            messages.success(request, "You have successfully booked tickets.")
             return redirect('dashboard')
 
     context = {
         'form':form,
-        'event': event,
+        'event': event_obj,
 
     }
     return render(request, 'book_event.html', context)
