@@ -5,6 +5,7 @@ from .forms import UserSignup, UserLogin, EventForm , BookEventForm
 from .models import Event , BookedEvent
 from django.contrib import messages
 from django.db.models import Q
+from django.contrib.auth.models import User
 
 def home(request):
     return render(request, 'home.html')
@@ -54,9 +55,18 @@ def dashboard(request):
 
 def event_detail(request, event_id):
     event = Event.objects.get(id=event_id)
+    id_list = BookedEvent.objects.filter(event=event).distinct()
+    id_list = id_list.values_list('user_id', flat=True).distinct().order_by()
+    users = User.objects.all()
+    attendees = []
+    for user_id in id_list:
+        for user in users:
+            if user.id == user_id:
+                attendees.append(user)
 
     context = {
-        'event': event
+        'event': event,
+        'attendees':attendees,
     }
     return render(request,'event_detail.html',context)
 

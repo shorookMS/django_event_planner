@@ -19,8 +19,30 @@
             <p>No. of seats left: {{event.seats}}</p>
       </p>
       {% if request.user == event.user %}
+      <hr class="m-3">
+      <div class="card">
+        <div class="table-responsive">
+          <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Attendee</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%for booker in attendees%}
+            <tr>
+              <td>{{booker.username}}</td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <hr class="m-3">
+
       <a href="{% url 'event-update' event.id %}" class="btn btn-outline-primary ">Update</a>
       {% endif %}
+
       {% if not event.seats == 0 %}
       <a href="{% url 'event-book' event.id %}" class="btn btn-outline-success ">Book</a>
       {%else%}
