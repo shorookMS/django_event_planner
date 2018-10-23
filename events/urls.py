@@ -13,7 +13,7 @@ urlpatterns = [
     path('dashboard/', dashboard, name='dashboard'),
     path('event/list/', events_list, name='events-list'),
     path('event/detail/<int:event_id>/', event_detail, name='event-detail'),
-    path('event/create', create_event, name='create-event'),
+    path('event/create/', create_event, name='create-event'),
     path('event/update/<int:event_id>/', event_update, name='event-update'),
     path('event/book/<int:event_id>/', event_book, name='event-book'),
 

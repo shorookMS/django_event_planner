@@ -8,6 +8,7 @@ class Event(models.Model):
 	location = models.CharField(max_length=150)
 	date = models.DateField()
 	time = models.TimeField()
+	qouta = models.PositiveIntegerField()
 	seats = models.PositiveIntegerField()
 
 	def __str__(self):

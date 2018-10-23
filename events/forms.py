@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Event, BookedEvent
+
+
 class UserSignup(forms.ModelForm):
     class Meta:
         model = User
@@ -18,7 +20,7 @@ class UserLogin(forms.Form):
 class EventForm(forms.ModelForm):
 	class Meta:
 		model = Event
-		exclude = ['user']
+		exclude = ['user','seats']
 
 		widgets= {
 			'date': forms.DateInput(attrs={ 'type': 'date'}),
@@ -30,4 +32,4 @@ class BookEventForm(forms.ModelForm):
 	class Meta:
 		model = BookedEvent
 		exclude = ['user','event']
-		
+

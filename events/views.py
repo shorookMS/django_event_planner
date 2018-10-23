@@ -6,7 +6,7 @@ from .models import Event , BookedEvent
 from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.models import User
-
+from datetime import datetime
 def home(request):
     return render(request, 'home.html')
 
@@ -19,6 +19,7 @@ def create_event(request):
         if form.is_valid():
             event = form.save(commit=False)
             event.user = request.user
+            event.seats = event.qouta
             event.save()
             return redirect('dashboard')
 
@@ -29,14 +30,23 @@ def create_event(request):
 
 def event_update(request, event_id):
     event = Event.objects.get(id=event_id)
+    QOUTA =  event.qouta
+    SEATS = event.seats
     if not (request.user.is_staff or request.user == event.user):
         return redirect('no-access')
     form = EventForm(instance=event)
     if request.method == "POST":
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
-            form.save()
-            return redirect('events-list')
+            event_obj = form.save(commit=False)
+            if QOUTA < event.qouta:
+                event_obj.seats = SEATS + (event_obj.qouta - QOUTA)
+                event_obj.save()
+            elif QOUTA > event_obj.qouta:
+                messages.warning(request, "Your capacity is underlimit.")
+                return redirect('event-update', event_id)
+
+            return redirect('event-detail', event_id)
     context = {
         "event": event,
         "form":form,
@@ -55,14 +65,8 @@ def dashboard(request):
 
 def event_detail(request, event_id):
     event = Event.objects.get(id=event_id)
-    id_list = BookedEvent.objects.filter(event=event).distinct()
-    id_list = id_list.values_list('user_id', flat=True).distinct().order_by()
-    users = User.objects.all()
-    attendees = []
-    for user_id in id_list:
-        for user in users:
-            if user.id == user_id:
-                attendees.append(user)
+    attendees = BookedEvent.objects.filter(event=event)
+
 
     context = {
         'event': event,
@@ -72,7 +76,10 @@ def event_detail(request, event_id):
 
 
 def events_list(request):
-    events = Event.objects.all()
+    today = datetime.now()
+    events = Event.objects.filter(date__gte=today,time__gte=today)
+
+
     query = request.GET.get('q')
 
     if query:
@@ -98,7 +105,6 @@ def event_book(request, event_id):
             booking = form.save(commit=False)
             booking.user = request.user
             booking.event = event_obj
-
             event_obj.seats = event_obj.seats - booking.ticket
             event_obj.save()
             booking.save()

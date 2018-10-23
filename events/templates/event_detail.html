@@ -31,7 +31,8 @@
           <tbody>
             {%for booker in attendees%}
             <tr>
-              <td>{{booker.username}}</td>
+              <td>{{booker.user.username}}</td>
+              <td>{{booker.user.username}}</td>
             </tr>
             {%endfor%}
           </tbody>

@@ -18,7 +18,7 @@
           <th scope="col">Event</th>
           <th scope="col">Seats</th>
           <th scope="col">Update</th>
-          <th scope="col">View</th>
+          <th scope="col">Qouta</th>
         </tr>
       </thead>
       <tbody>
@@ -31,7 +31,8 @@
           <td>{{event.time}}</td>
           <td>{{event.seats}}</td>
           <td><a href="{% url 'event-update' event.id %}" class="btn btn-outline-primary ">Update</a></td>
-          <td> <a href="{% url 'event-detail' event.id %}" class="btn btn-outline-dark">View</a></td>
+          <td>{{event.qouta}}</td>
+
         </tr>
         {%endfor%}
       </tbody>
